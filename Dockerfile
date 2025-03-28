@@ -11,7 +11,7 @@ RUN mkdir -p /app/data && \
 
 # Pre-install required packages globally as root to avoid permission issues later
 RUN npm config set ignore-scripts false && \
-    npm install -g supergateway @modelcontextprotocol/server-filesystem mcp-server-git
+    npm install -g supergateway @modelcontextprotocol/server-filesystem @modelcontextprotocol/mcp-server-git
 
 # Create the startup script
 RUN echo '#!/bin/sh' > /app/StartupScript.sh && \

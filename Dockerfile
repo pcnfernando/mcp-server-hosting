@@ -1,18 +1,17 @@
-FROM node:20-slim
+FROM node:20-alpine
 
 # Set working directory
 WORKDIR /app
 
+# Create non-root user for better security
+# Alpine uses adduser instead of useradd
+RUN addgroup -g 10014 nodeuser && \
+    adduser -u 10014 -G nodeuser -s /bin/sh -D nodeuser && \
+    mkdir -p /app/data && \
+    chown -R nodeuser:nodeuser /app
+
+# Switch to non-root user
 USER 10014
-
-# Install necessary tools
-RUN apt-get update && apt-get install -y \
-    curl \
-    git \
-    && rm -rf /var/lib/apt/lists/*
-
-# Create directory for MCP data
-RUN mkdir -p /app/data
 
 # Set environment variables with defaults that can be overridden
 ENV PORT=8000
@@ -23,11 +22,8 @@ ENV DATA_FOLDER=./data
 ENV SERVER_TYPE=@modelcontextprotocol/server-filesystem
 
 # Copy startup script
-COPY StartupScript.sh /app/
+COPY --chown=10014:10014 StartupScript.sh /app/
 RUN chmod +x /app/StartupScript.sh
-
-# Install global npm packages
-RUN npm install -g npm@latest
 
 # Expose the default port
 EXPOSE 8000

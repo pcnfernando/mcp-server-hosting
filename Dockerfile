@@ -31,4 +31,4 @@ RUN npm install -g npm@latest
 EXPOSE 8000
 
 # Start the MCP server using the script
-CMD ["/app/start-mcp.sh"]
+CMD ["/app/StartupScript.sh"]

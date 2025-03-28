@@ -3,6 +3,8 @@ FROM node:20-slim
 # Set working directory
 WORKDIR /app
 
+USER 10014
+
 # Install necessary tools
 RUN apt-get update && apt-get install -y \
     curl \
@@ -21,7 +23,7 @@ ENV DATA_FOLDER=./data
 ENV SERVER_TYPE=@modelcontextprotocol/server-filesystem
 
 # Copy startup script
-COPY start-mcp.sh /app/
+COPY StartupScript.sh /app/
 RUN chmod +x /app/StartupScript.sh
 
 # Install global npm packages

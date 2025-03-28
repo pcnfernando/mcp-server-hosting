@@ -16,9 +16,9 @@ This repository contains a Docker setup for running an MCP (Model Context Protoc
    cd <your-repo-directory>
    ```
 
-2. Create the `start-mcp.sh` script and make it executable:
+2. Create the `StartupScript.sh` script and make it executable:
    ```bash
-   chmod +x start-mcp.sh
+   chmod +x StartupScript.sh
    ```
 
 3. Build and run the Docker container:

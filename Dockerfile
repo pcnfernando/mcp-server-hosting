@@ -22,11 +22,11 @@ ENV DATA_FOLDER=./data
 ENV SERVER_TYPE=@modelcontextprotocol/server-filesystem
 
 # Copy startup script
-COPY --chown=10014:10014 StartupScript.sh /app/
-RUN chmod +x /app/StartupScript.sh
+# COPY --chown=10014:10014 StartupScript.sh /app/
+# RUN chmod +x /app/StartupScript.sh
 
 # Expose the default port
 EXPOSE 8000
 
 # Start the MCP server using the script
-CMD ["/app/StartupScript.sh"]
+CMD ["StartupScript.sh"]

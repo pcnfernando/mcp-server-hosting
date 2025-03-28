@@ -22,7 +22,7 @@ ENV SERVER_TYPE=@modelcontextprotocol/server-filesystem
 
 # Copy startup script
 COPY start-mcp.sh /app/
-RUN chmod +x /app/start-mcp.sh
+RUN chmod +x /app/StartupScript.sh
 
 # Install global npm packages
 RUN npm install -g npm@latest

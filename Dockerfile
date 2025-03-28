@@ -10,7 +10,7 @@ RUN mkdir -p /app/data && \
     chmod -R 777 /app
 
 # Pre-install required packages globally as root to avoid permission issues later
-RUN npm config set unsafe-perm true && \
+RUN npm config set ignore-scripts false && \
     npm install -g supergateway @modelcontextprotocol/server-filesystem mcp-server-git
 
 # Create the startup script

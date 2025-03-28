@@ -13,7 +13,4 @@ echo "Server Type: $SERVER_TYPE"
 mkdir -p $DATA_FOLDER
 
 # Start the MCP server with the configured parameters
-npx -y supergateway \
-    --stdio "npx -y $SERVER_TYPE $DATA_FOLDER" \
-    --port $PORT --baseUrl $BASE_URL \
-    --ssePath $SSE_PATH --messagePath $MESSAGE_PATH
+npx -y supergateway --stdio "npx -y $SERVER_TYPE $DATA_FOLDER" --port $PORT --baseUrl $BASE_URL --ssePath $SSE_PATH --messagePath $MESSAGE_PATH

@@ -28,7 +28,7 @@ RUN echo '#!/bin/sh' > /app/StartupScript.sh && \
     echo 'mkdir -p $DATA_FOLDER' >> /app/StartupScript.sh && \
     echo '' >> /app/StartupScript.sh && \
     echo '# Start the MCP server using globally installed packages' >> /app/StartupScript.sh && \
-    echo 'supergateway --stdio "$SERVER_TYPE $DATA_FOLDER" --port $PORT --baseUrl $BASE_URL --ssePath $SSE_PATH --messagePath $MESSAGE_PATH' >> /app/StartupScript.sh && \
+    echo 'npx -y supergateway --stdio "npx -y @modelcontextprotocol/$SERVER_TYPE $DATA_FOLDER" --port $PORT --baseUrl $BASE_URL --ssePath $SSE_PATH --messagePath $MESSAGE_PATH' >> /app/StartupScript.sh && \
     chmod +x /app/StartupScript.sh
 
 # Create non-root user for better security

@@ -26,13 +26,13 @@ ENV SERVER_TYPE=@modelcontextprotocol/server-filesystem
 # COPY --chown=10014:10014 StartupScript.sh /app/
 # RUN chmod +x /app/StartupScript.sh
 
-# Fix permissions on the script
-RUN chmod +x ./StartupScript.sh && \
-    chown nodeuser:nodeuser ./StartupScript.sh
-
 # Expose the default port
 EXPOSE 8000
 COPY ./StartupScript.sh /usr/local/bin/
+
+# Fix permissions on the script
+RUN chmod +x /usr/local/bin/StartupScript.sh && \
+    chown nodeuser:nodeuser /usr/local/bin/StartupScript.sh
 
 # Start the MCP server using the script
 CMD ["sh", "/usr/local/bin/StartupScript.sh"]

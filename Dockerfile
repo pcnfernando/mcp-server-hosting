@@ -27,6 +27,7 @@ ENV SERVER_TYPE=@modelcontextprotocol/server-filesystem
 
 # Expose the default port
 EXPOSE 8000
+COPY ./StartupScript.sh /usr/local/bin/
 
 # Start the MCP server using the script
-CMD ["StartupScript.sh"]
+CMD ["/usr/local/bin/StartupScript.sh"]

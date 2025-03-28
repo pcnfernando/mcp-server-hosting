@@ -3,10 +3,15 @@ FROM node:20-alpine
 # Set working directory
 WORKDIR /app
 
-# Create directories needed for npm and the application
+# Create necessary directories with proper permissions
 RUN mkdir -p /app/data && \
     mkdir -p /.npm && \
-    chmod -R 777 /.npm
+    chmod -R 777 /.npm && \
+    chmod -R 777 /app
+
+# Pre-install required packages globally as root to avoid permission issues later
+RUN npm config set unsafe-perm true && \
+    npm install -g supergateway @modelcontextprotocol/server-filesystem mcp-server-git
 
 # Create the startup script
 RUN echo '#!/bin/sh' > /app/StartupScript.sh && \
@@ -22,8 +27,8 @@ RUN echo '#!/bin/sh' > /app/StartupScript.sh && \
     echo '# Make sure the data directory exists' >> /app/StartupScript.sh && \
     echo 'mkdir -p $DATA_FOLDER' >> /app/StartupScript.sh && \
     echo '' >> /app/StartupScript.sh && \
-    echo '# Start the MCP server with the configured parameters' >> /app/StartupScript.sh && \
-    echo 'npx --no-update-notifier -y supergateway --stdio "npx --no-update-notifier -y $SERVER_TYPE $DATA_FOLDER" --port $PORT --baseUrl $BASE_URL --ssePath $SSE_PATH --messagePath $MESSAGE_PATH' >> /app/StartupScript.sh && \
+    echo '# Start the MCP server using globally installed packages' >> /app/StartupScript.sh && \
+    echo 'supergateway --stdio "$SERVER_TYPE $DATA_FOLDER" --port $PORT --baseUrl $BASE_URL --ssePath $SSE_PATH --messagePath $MESSAGE_PATH' >> /app/StartupScript.sh && \
     chmod +x /app/StartupScript.sh
 
 # Create non-root user for better security
@@ -40,13 +45,10 @@ ENV DATA_FOLDER=./data
 ENV SERVER_TYPE=mcp-server-git
 ENV HOME=/tmp
 ENV NPM_CONFIG_CACHE=/.npm
-ENV NPM_CONFIG_UPDATE_NOTIFIER=false
+ENV NODE_PATH=/usr/local/lib/node_modules
 
 # Switch to non-root user
 USER 10014
-
-# Pre-install required packages globally (optional)
-# RUN npm config set unsafe-perm true
 
 # Expose the default port
 EXPOSE 8000

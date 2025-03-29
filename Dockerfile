@@ -1,6 +1,6 @@
 FROM node:20-alpine
 
-# Create non-root user first
+# Create non-root user first with ID in required range (10000-20000)
 RUN addgroup -g 10014 nodeuser && \
     adduser -u 10014 -G nodeuser -s /bin/sh -D nodeuser
 
@@ -55,8 +55,8 @@ ENV PORT=8000 \
 
 WORKDIR /app
 
-# Switch to non-root user for better security
-USER nodeuser
+# Switch to non-root user for better security (ID 10014)
+USER 10014
 
 EXPOSE 8000
 

@@ -1,14 +1,20 @@
 FROM node:20-alpine
 
+# Create non-root user first
+RUN addgroup -g 10014 nodeuser && \
+    adduser -u 10014 -G nodeuser -s /bin/sh -D nodeuser
+
 # Create app directories and npm cache directories with proper permissions
 RUN mkdir -p /app/data && \
     mkdir -p /.npm/_cacache && \
     mkdir -p /.npm/_logs && \
     chmod -R 777 /app && \
-    chmod -R 777 /.npm
+    chmod -R 777 /.npm && \
+    chown -R nodeuser:nodeuser /app && \
+    chown -R nodeuser:nodeuser /.npm
 
 # Install required packages globally
-RUN npm install -g supergateway @modelcontextprotocol/server-filesystem @modelcontextprotocol/mcp-server-git
+RUN npm install -g supergateway @modelcontextprotocol/server-filesystem mcp-server-git
 
 # Create startup script with explicit npm cache settings
 COPY <<-"EOT" /app/start.sh
@@ -33,7 +39,8 @@ mkdir -p $DATA_FOLDER
 NODE_ENV=production npm_config_cache=/.npm supergateway --stdio "NODE_ENV=production npm_config_cache=/.npm $SERVER_TYPE $DATA_FOLDER" --port $PORT --baseUrl $BASE_URL --ssePath $SSE_PATH --messagePath $MESSAGE_PATH
 EOT
 
-RUN chmod +x /app/start.sh
+RUN chmod +x /app/start.sh && \
+    chown nodeuser:nodeuser /app/start.sh
 
 # Set environment variables
 ENV PORT=8000 \
@@ -43,9 +50,14 @@ ENV PORT=8000 \
     DATA_FOLDER=./data \
     SERVER_TYPE=mcp-server-git \
     NODE_PATH=/usr/local/lib/node_modules \
-    NPM_CONFIG_CACHE=/.npm
+    NPM_CONFIG_CACHE=/.npm \
+    HOME=/home/nodeuser
 
 WORKDIR /app
+
+# Switch to non-root user for better security
+USER nodeuser
+
 EXPOSE 8000
 
 # Start the server

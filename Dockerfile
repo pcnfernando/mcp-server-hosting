@@ -1,57 +1,52 @@
 FROM node:20-alpine
 
-# Set working directory
-WORKDIR /app
-
-# Create necessary directories with proper permissions
+# Create app directories and npm cache directories with proper permissions
 RUN mkdir -p /app/data && \
-    mkdir -p /.npm && \
-    chmod -R 777 /.npm && \
-    chmod -R 777 /app
+    mkdir -p /.npm/_cacache && \
+    mkdir -p /.npm/_logs && \
+    chmod -R 777 /app && \
+    chmod -R 777 /.npm
 
-# Pre-install required packages globally as root to avoid permission issues later
-RUN npm config set ignore-scripts false && \
-    npm install -g supergateway @modelcontextprotocol/server-github @modelcontextprotocol/server-filesystem
+# Install required packages globally
+RUN npm install -g supergateway @modelcontextprotocol/server-filesystem @modelcontextprotocol/mcp-server-git
 
-# Create the startup script
-RUN echo '#!/bin/sh' > /app/StartupScript.sh && \
-    echo 'set -e' >> /app/StartupScript.sh && \
-    echo 'echo "Starting MCP Server with the following configuration:"' >> /app/StartupScript.sh && \
-    echo 'echo "Port: $PORT"' >> /app/StartupScript.sh && \
-    echo 'echo "Base URL: $BASE_URL"' >> /app/StartupScript.sh && \
-    echo 'echo "SSE Path: $SSE_PATH"' >> /app/StartupScript.sh && \
-    echo 'echo "Message Path: $MESSAGE_PATH"' >> /app/StartupScript.sh && \
-    echo 'echo "Data Folder: $DATA_FOLDER"' >> /app/StartupScript.sh && \
-    echo 'echo "Server Type: $SERVER_TYPE"' >> /app/StartupScript.sh && \
-    echo '' >> /app/StartupScript.sh && \
-    echo '# Make sure the data directory exists' >> /app/StartupScript.sh && \
-    echo 'mkdir -p $DATA_FOLDER' >> /app/StartupScript.sh && \
-    echo '' >> /app/StartupScript.sh && \
-    echo '# Start the MCP server using globally installed packages' >> /app/StartupScript.sh && \
-    echo 'npx -y supergateway --stdio "npx -y @modelcontextprotocol/$SERVER_TYPE $DATA_FOLDER" --port $PORT --baseUrl $BASE_URL --ssePath $SSE_PATH --messagePath $MESSAGE_PATH' >> /app/StartupScript.sh && \
-    chmod +x /app/StartupScript.sh
+# Create startup script with explicit npm cache settings
+COPY <<-"EOT" /app/start.sh
+#!/bin/sh
+set -e
+echo "Starting MCP Server with the following configuration:"
+echo "Port: $PORT"
+echo "Base URL: $BASE_URL"
+echo "SSE Path: $SSE_PATH"
+echo "Message Path: $MESSAGE_PATH"
+echo "Data Folder: $DATA_FOLDER"
+echo "Server Type: $SERVER_TYPE"
 
-# Create non-root user for better security
-RUN addgroup -g 10014 nodeuser && \
-    adduser -u 10014 -G nodeuser -s /bin/sh -D nodeuser && \
-    chown -R nodeuser:nodeuser /app
+# Set explicit npm cache location and create directories if needed
+export NPM_CONFIG_CACHE=/.npm
+mkdir -p /.npm/_cacache /.npm/_logs
+chmod -R 777 /.npm
 
-# Set environment variables with defaults that can be overridden
-ENV PORT=8000
-ENV BASE_URL=http://localhost:8000
-ENV SSE_PATH=/sse
-ENV MESSAGE_PATH=/message
-ENV DATA_FOLDER=./data
-ENV SERVER_TYPE=mcp-server-git
-ENV HOME=/tmp
-ENV NPM_CONFIG_CACHE=/.npm
-ENV NODE_PATH=/usr/local/lib/node_modules
+mkdir -p $DATA_FOLDER
 
-# Switch to non-root user
-USER 10014
+# Run with explicit npm settings
+NODE_ENV=production npm_config_cache=/.npm supergateway --stdio "NODE_ENV=production npm_config_cache=/.npm $SERVER_TYPE $DATA_FOLDER" --port $PORT --baseUrl $BASE_URL --ssePath $SSE_PATH --messagePath $MESSAGE_PATH
+EOT
 
-# Expose the default port
+RUN chmod +x /app/start.sh
+
+# Set environment variables
+ENV PORT=8000 \
+    BASE_URL=http://localhost:8000 \
+    SSE_PATH=/sse \
+    MESSAGE_PATH=/message \
+    DATA_FOLDER=./data \
+    SERVER_TYPE=mcp-server-git \
+    NODE_PATH=/usr/local/lib/node_modules \
+    NPM_CONFIG_CACHE=/.npm
+
+WORKDIR /app
 EXPOSE 8000
 
-# Start the MCP server using the script
-CMD ["sh", "/app/StartupScript.sh"]
+# Start the server
+CMD ["/app/start.sh"]

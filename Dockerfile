@@ -14,7 +14,7 @@ RUN mkdir -p /app/data && \
     chown -R nodeuser:nodeuser /.npm
 
 # Install required packages globally
-RUN npm install -g supergateway @modelcontextprotocol/server-filesystem @modelcontextprotocol/mcp-server-git
+RUN npm install -g supergateway @modelcontextprotocol/server-filesystem @modelcontextprotocol/server-github
 
 # Create startup script with explicit npm cache settings
 COPY <<-"EOT" /app/start.sh

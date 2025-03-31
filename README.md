@@ -31,7 +31,3 @@ The container supports the following environment variables:
 
 ## Exposed Ports
 - **8000**: The main port where the MCP server runs.
-
-## License
-This project is licensed under [MIT License](LICENSE).
-

@@ -12,7 +12,7 @@ docker run -p 8000:8000 \
   -e SSE_PATH=/sse \
   -e MESSAGE_PATH=/message \
   -e DATA_FOLDER=/app/data \
-  -e SERVER_TYPE=mcp-server-git \
+  -e SERVER_TYPE=@modelcontextprotocol/server-github \
   mcp-server
 ```
 

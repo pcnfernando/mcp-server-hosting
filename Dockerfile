@@ -63,7 +63,7 @@ ENV PORT=$PORT \
 WORKDIR /app
 
 # Switch to non-root user
-USER $USER_ID
+USER 10014
 
 EXPOSE $PORT
 

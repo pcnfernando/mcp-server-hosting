@@ -10,7 +10,7 @@ RUN mkdir -p /app/data && \
     chown -R 10014:10014 /app
 
 # Install required packages globally
-RUN npm install -g supergateway @modelcontextprotocol/server-filesystem @modelcontextprotocol/server-github
+RUN npm install -g @pcnfernando/supergateway supergateway @modelcontextprotocol/server-filesystem @modelcontextprotocol/server-github
 
 # Create startup script with appropriate permissions from the beginning
 RUN echo '#!/bin/sh' > /app/start.sh && \
@@ -30,7 +30,7 @@ RUN echo '#!/bin/sh' > /app/start.sh && \
     echo 'mkdir -p $DATA_FOLDER' >> /app/start.sh && \
     echo '' >> /app/start.sh && \
     echo '# Run with explicit npm settings' >> /app/start.sh && \
-    echo 'NODE_ENV=production npm_config_cache=/tmp/.npm npx -y supergateway --stdio "NODE_ENV=production npm_config_cache=/tmp/.npm npx -y $SERVER_TYPE $DATA_FOLDER" --baseUrl $BASE_URL --port $PORT --ssePath $SSE_PATH --messagePath $MESSAGE_PATH' >> /app/start.sh && \
+    echo 'NODE_ENV=production npm_config_cache=/tmp/.npm npx -y @pcnfernando/supergateway --header X-Accel-Buffering:no --stdio "NODE_ENV=production npm_config_cache=/tmp/.npm npx -y $SERVER_TYPE $DATA_FOLDER" --baseUrl $BASE_URL --port $PORT --ssePath $SSE_PATH --messagePath $MESSAGE_PATH' >> /app/start.sh && \
     chmod 755 /app/start.sh && \
     chown 10014:10014 /app/start.sh
 

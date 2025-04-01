@@ -22,7 +22,7 @@ RUN mkdir -p /app/data && \
     chown -R $USER_ID:$GROUP_ID /app
 
 # Install core MCP packages and any additional packages specified
-RUN npm install -g @pcnfernando/supergateway
+RUN npm install -g @pcnfernando/supergateway \
     @modelcontextprotocol/server-filesystem \
     @modelcontextprotocol/server-github \
     $ADDITIONAL_PACKAGES

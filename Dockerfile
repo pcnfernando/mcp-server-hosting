@@ -9,7 +9,7 @@ ARG BASE_URL=http://localhost:8000
 ARG SSE_PATH=/sse
 ARG MESSAGE_PATH=/message
 ARG DATA_FOLDER=./data
-ARG SERVER_TYPE=@modelcontextprotocol/server-filesystem
+ARG SERVER_TYPE=@modelcontextprotocol/server-github
 ARG ADDITIONAL_PACKAGES=""
 
 # Create non-root user with configurable ID

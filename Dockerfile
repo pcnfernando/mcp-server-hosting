@@ -32,7 +32,7 @@ RUN npm install -g @pcnfernando/supergateway \
 
 # Install Go and build the auth proxy from source
 RUN apk add --no-cache git go && \
-    git clone https://github.com/wso2/open-mcp-auth-proxy && \
+    git clone https://github.com/pcnfernando/open-mcp-auth-proxy && \
     cd open-mcp-auth-proxy && \
     go mod tidy && \
     go mod download && \

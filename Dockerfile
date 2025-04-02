@@ -13,7 +13,7 @@ ARG SERVER_TYPE=@modelcontextprotocol/server-filesystem
 ARG ADDITIONAL_PACKAGES=""
 ARG PROXY_ENABLED="true"
 ARG PROXY_URL=""
-ARG PROXY_PORT=9090
+ARG PROXY_PORT=8080
 
 # Create non-root user with configurable ID
 RUN addgroup -g $GROUP_ID nodeuser && \
@@ -108,7 +108,7 @@ WORKDIR /app
 # Switch to non-root user
 USER 10014
 
-EXPOSE $PORT
+EXPOSE $PROXY_PORT
 
 # Start the server
 CMD ["/bin/sh", "/app/start.sh"]

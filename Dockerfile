@@ -34,6 +34,10 @@ RUN npm install -g @pcnfernando/supergateway \
 RUN apk add --no-cache git go && \
     git clone https://github.com/wso2/open-mcp-auth-proxy && \
     cd open-mcp-auth-proxy && \
+    go mod tidy && \
+    go mod download && \
+    go get gopkg.in/yaml.v2 && \
+    go get github.com/golang-jwt/jwt/v4 && \
     go build -o openmcpauthproxy ./cmd/proxy && \
     mv openmcpauthproxy /usr/local/bin/ && \
     chmod +x /usr/local/bin/openmcpauthproxy && \
@@ -66,7 +70,7 @@ RUN echo '#!/bin/sh' > /app/start.sh && \
     echo '# Start the proxy in demo mode in the background if enabled' >> /app/start.sh && \
     echo 'if [ "$PROXY_ENABLED" = "true" ]; then' >> /app/start.sh && \
     echo '  echo "Starting auth proxy in demo mode..."' >> /app/start.sh && \
-    echo '  /usr/local/bin/openmcpauthproxy &' >> /app/start.sh && \
+    echo '  /usr/local/bin/openmcpauthproxy --demo &' >> /app/start.sh && \
     echo '  PROXY_PID=$!' >> /app/start.sh && \
     echo '  echo "Auth proxy started with PID: $PROXY_PID"' >> /app/start.sh && \
     echo '  # Give proxy a moment to start up' >> /app/start.sh && \

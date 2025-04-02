@@ -41,6 +41,9 @@ RUN apk add --no-cache git go && \
     go build -o openmcpauthproxy ./cmd/proxy && \
     mv openmcpauthproxy /usr/local/bin/ && \
     chmod +x /usr/local/bin/openmcpauthproxy && \
+    # Create config directory and copy config.yaml
+    mkdir -p /etc/open-mcp-auth-proxy && \
+    cp config.yaml /etc/open-mcp-auth-proxy/ && \
     cd .. && \
     rm -rf open-mcp-auth-proxy
 
